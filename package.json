@@ -1,0 +1,39 @@
+{
+  "name": "skill-installer",
+  "version": "1.0.0",
+  "description": "This project is a skill installer for the Agent platform. It allows users to install skills on their Agent.",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "skill-installer": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/index.js start",
+    "dev": "tsx src/index.ts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olala7846/skill-installer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olala7846/skill-installer/issues"
+  },
+  "homepage": "https://github.com/olala7846/skill-installer#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "commander": "^14.0.3",
+    "picocolors": "^1.1.1",
+    "simple-git": "^3.33.0"
+  }
+}

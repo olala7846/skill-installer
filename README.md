@@ -32,11 +32,33 @@ This project is a CLI tool for the Agent platform. It allows users to browse and
    node dist/index.js start
    ```
 
-To install the CLI globally on your system for testing:
+## Global Installation
+
+If you want to install the tool globally so you can use `skill-installer` from anywhere on your machine without navigating to the project directory:
+
+### For Development (Symlink)
+To create a symlink that stays up-to-date with your local changes:
 ```sh
 npm link
+```
+
+### Full Global Install
+To install it statically as a global package:
+```sh
+npm install -g .
+```
+
+After doing either of these, you can simply run:
+```sh
 skill-installer start
 ```
+
+### Self-Upgrading
+If you installed the tool via symlink from a Git repository, you can easily self-update it by running:
+```sh
+skill-installer upgrade
+```
+This automatically fetches the latest code from the repository, installs dependencies, and rebuilds the CLI.
 
 ## Supported Target Agents
 

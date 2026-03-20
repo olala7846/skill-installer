@@ -7,7 +7,8 @@ This project is a CLI tool for the Agent platform. It allows users to browse and
 ## Features
 - **Multi-Agent Support**: Automatically detects installed AI agents (e.g., Google Antigravity, Gemini CLI, Claude Code).
 - **Interactive TUI Picker**: Beautiful interface to select multiple skills to install or upgrade at once.
-- **Configuration-Driven Fetching**: Scans deterministic Git paths (like `anthropics/skills/skills` and `garrytan/gstack/.agents/skills`) via the GitHub API to list available skills.
+- **Zero-Limit Git Caching**: Bypasses GitHub API rate limits by intelligently cloning repository trees to a local cache (`~/.skill-installer/repos/`) to discover and sync skills instantly.
+- **Rich Skill Previews**: Proactively parses YAML front-matter from local `SKILL.md` files to display interactive descriptions on hover inside the menu.
 - **Smart Installation**: Clones new skills or intelligently upgrades (`git pull`) already installed ones straight into your local agent environment.
 - **Installed Status**: Visually indicates which skills are already installed.
 

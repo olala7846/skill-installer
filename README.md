@@ -67,6 +67,7 @@ This automatically fetches the latest code from the repository, installs depende
 - [x] Google Antigravity (`~/.gemini/antigravity/skills/`)
 - [x] Claude Code (`~/.claude/skills/`) - [Documentation](https://code.claude.com/docs/en/skills)
 - [x] OpenAI Codex (`~/.agents/skills/`) - [Documentation](https://developers.openai.com/codex/skills)
+- [x] OpenClaw (`~/.openclaw/skills/`) - [Documentation](https://docs.openclaw.ai/tools/skills)
 
 ## Skill Repositories Supported
 

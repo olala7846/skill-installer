@@ -2,7 +2,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
-export type AgentName = 'Claude Code' | 'Gemini CLI' | 'Google Antigravity' | 'OpenAI Codex';
+export type AgentName = 'Claude Code' | 'Gemini CLI' | 'Google Antigravity' | 'OpenAI Codex' | 'OpenClaw';
 
 export interface AgentInfo {
   name: AgentName;
@@ -32,6 +32,11 @@ export function detectAgents(): AgentInfo[] {
     {
       name: 'OpenAI Codex',
       skillsPath: join(home, '.agents', 'skills'),
+      isInstalled: false,
+    },
+    {
+      name: 'OpenClaw',
+      skillsPath: join(home, '.openclaw', 'skills'),
       isInstalled: false,
     }
   ];

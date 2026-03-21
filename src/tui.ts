@@ -37,7 +37,7 @@ export async function runTui() {
     return {
       value: skill,
       label: `${skill.name}${installedLabel}`,
-      hint: isInstalled ? `Already installed, select to upgrade. ${skill.description}` : skill.description
+      hint: skill.description
     };
   });
 

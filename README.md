@@ -71,6 +71,7 @@ This automatically fetches the latest code from the repository, installs depende
 
 ## Skill Repositories Supported
 
+- Bundled skills in this repository (`skills/`)
 - `anthropics/skills` (`skills/`)
 - `garrytan/gstack` (`.agents/skills/`)
 - `openai/skills` (`skills/.curated/`)

@@ -1,6 +1,6 @@
 import { simpleGit } from 'simple-git';
 import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { cpSync, existsSync, mkdirSync } from 'fs';
 import * as p from '@clack/prompts';
 import { SkillSource } from './fetcher.js';
 import { AgentInfo } from './agents.js';
@@ -20,7 +20,11 @@ export async function installSkills(skills: SkillSource[], targetAgent: AgentInf
     if (existsSync(skillPath)) {
       spinner.start(`Updating ${skill.name}...`);
       try {
-        await simpleGit(skillPath).pull();
+        if (skill.localPath) {
+          cpSync(skill.localPath, skillPath, { recursive: true, force: true });
+        } else {
+          await simpleGit(skillPath).pull();
+        }
         spinner.stop(`Updated ${skill.name} successfully.`);
       } catch (err) {
          spinner.stop(`Failed to update ${skill.name}.`);
@@ -29,7 +33,10 @@ export async function installSkills(skills: SkillSource[], targetAgent: AgentInf
     } else {
       spinner.start(`Installing ${skill.name}...`);
       try {
-        if (skill.isFolderInRepo && skill.folderPath) {
+        if (skill.localPath) {
+          cpSync(skill.localPath, skillPath, { recursive: true });
+          spinner.stop(`Installed ${skill.name}.`);
+        } else if (skill.isFolderInRepo && skill.folderPath) {
           // It's a subdirectory inside a monorepo.
           // simple-git doesn't natively support sparse checkout easily in a single command,
           // but we can just clone the whole repo in a temp dir and copy the folder,

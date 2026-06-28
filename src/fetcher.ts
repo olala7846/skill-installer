@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
 export interface SkillSource {
   name: string;
@@ -9,6 +10,7 @@ export interface SkillSource {
   repoUrl: string; // The URL to clone
   isFolderInRepo?: boolean; // If true, the skill is a subdirectory in a monorepo
   folderPath?: string; // If it's a monorepo, the folder to copy.
+  localPath?: string; // Bundled skill directory included with this installer.
 }
 
 const SKILL_REPOSITORIES = [
@@ -17,11 +19,48 @@ const SKILL_REPOSITORIES = [
   { owner: 'openai', repo: 'skills', path: 'skills/.curated' }
 ];
 
+function parseSkillDescription(skillMdPath: string, fallback: string): string {
+  if (!fs.existsSync(skillMdPath)) {
+    return fallback;
+  }
+
+  const content = fs.readFileSync(skillMdPath, 'utf8');
+  const match = content.match(/^description:\s*(.+)$/m);
+  return match?.[1]?.trim() || fallback;
+}
+
+function fetchBundledSkills(): SkillSource[] {
+  const distDir = path.dirname(fileURLToPath(import.meta.url));
+  const projectRoot = path.join(distDir, '..');
+  const skillsDir = path.join(projectRoot, 'skills');
+
+  if (!fs.existsSync(skillsDir)) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
+
+  return entries
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.'))
+    .map((entry) => {
+      const localPath = path.join(skillsDir, entry.name);
+      return {
+        name: entry.name,
+        description: parseSkillDescription(
+          path.join(localPath, 'SKILL.md'),
+          'Bundled skill from skill-installer'
+        ),
+        repoUrl: 'bundled:skill-installer',
+        localPath,
+      };
+    });
+}
+
 /**
  * Fetches skills from known repositories by locally prioritizing a git cache.
  */
 export async function fetchAvailableSkills(): Promise<SkillSource[]> {
-  const skills: SkillSource[] = [];
+  const skills: SkillSource[] = fetchBundledSkills();
   const cacheDir = path.join(os.homedir(), '.skill-installer', 'repos');
 
   if (!fs.existsSync(cacheDir)) {
@@ -53,21 +92,12 @@ export async function fetchAvailableSkills(): Promise<SkillSource[]> {
 
         for (const entry of entries) {
           if (entry.isDirectory() && !entry.name.startsWith('.')) {
-            let description = `Skill from ${r.owner}/${r.repo}`;
-            
-            // Proactively parse SKILL.md front-matter
-            const skillMdPath = path.join(skillsDir, entry.name, 'SKILL.md');
-            if (fs.existsSync(skillMdPath)) {
-              const content = fs.readFileSync(skillMdPath, 'utf8');
-              const match = content.match(/^description:\s*(.+)$/m);
-              if (match && match[1]) {
-                description = match[1].trim();
-              }
-            }
-            
             skills.push({
               name: entry.name,
-              description,
+              description: parseSkillDescription(
+                path.join(skillsDir, entry.name, 'SKILL.md'),
+                `Skill from ${r.owner}/${r.repo}`
+              ),
               repoUrl,
               isFolderInRepo: true,
               folderPath: path.join(r.path, entry.name),
